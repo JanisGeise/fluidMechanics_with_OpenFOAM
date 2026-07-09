@@ -16,13 +16,13 @@ The focus is on producing qualitative animations of concepts.**
    <table>
      <tr>
        <td>
-         <video src="media/wave_animation_Ma0.0.mp4" controls muted loop width="100%"></video>
+         <video src="https://github.com/user-attachments/assets/7a45dbb1-40b8-4d08-9505-5a9fc9953be0" controls muted loop width="100%"></video>
        </td>
        <td>
-         <video src="media/wave_animation_Ma0.50.mp4" controls muted loop width="100%"></video>
+         <video src="https://github.com/user-attachments/assets/a6e129a7-e2b8-47d8-991f-6aa2b7d6e69d" controls muted loop width="100%"></video>
        </td>
        <td>
-         <video src="media/wave_animation_Ma1.25.mp4" controls muted loop width="100%"></video>
+         <video src="https://github.com/user-attachments/assets/1505139a-a879-479d-82cc-200ec16d8308" controls muted loop width="100%"></video>
        </td>
      </tr>
    </table>
