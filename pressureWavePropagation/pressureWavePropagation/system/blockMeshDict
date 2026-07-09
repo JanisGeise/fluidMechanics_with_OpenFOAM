@@ -1,0 +1,203 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2412                                  |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale 1;
+
+// definition of dimensions for a rectangular domain
+
+// x-bounds
+x0  0;          // origin
+x1  99.5;          // distance inlet -> patch, leave unchanged
+x2  100.5;          // lenght patch, leave unchanged
+x3  300;         // distance patch -> outlet
+
+// y-bounds
+y0  $x0;        // origin
+y1  149.5;        // distance inlet -> patch, leave unchanged
+y2  150.5;        // lenght patch, leave unchanged
+y3  $x3;        // distance patch -> outlet
+
+// z-bounds
+z0  0;
+z1  0.05;
+
+// number of cells
+
+// x-direction
+nx1 100;
+nx2 4;       // leave unchanged
+nx3 150;
+
+// y-direction
+ny1 $nx1;
+ny2 8;      // leave unchanged
+ny3 $nx3;
+
+// gradings
+g1my 10;
+g1px -10;
+g1py -15;
+g1mx 20;
+
+vertices
+(
+    // block 0
+    ($x0    $y0     $z0)        // 0
+    ($x1    $y0     $z0)        // 1
+    ($x1    $y1     $z0)        // 2  
+    ($x0    $y1     $z0)        // 3 
+    ($x0    $y0     $z1)        // 4
+    ($x1    $y0     $z1)        // 5   
+    ($x1    $y1     $z1)        // 6
+    ($x0    $y1     $z1)        // 7
+
+    // block 1
+    ($x2    $y0     $z0)        // 8
+    ($x2    $y1     $z0)        // 9
+    ($x2    $y0     $z1)        // 10
+    ($x2    $y1     $z1)        // 11
+
+    // block 2
+    ($x3    $y0     $z0)        // 12
+    ($x3    $y1     $z0)        // 13
+    ($x3    $y0     $z1)        // 14
+    ($x3    $y1     $z1)        // 15
+
+    // block 3
+    ($x1    $y2     $z0)        // 16
+    ($x0    $y2     $z0)        // 17
+    ($x1    $y2     $z1)        // 18
+    ($x0    $y2     $z1)        // 19
+
+    // block 4
+    ($x3    $y2     $z0)        // 20
+    ($x2    $y2     $z0)        // 21
+    ($x3    $y2     $z1)        // 22
+    ($x2    $y2     $z1)        // 23
+
+    // block 5
+    ($x1    $y3     $z0)        // 24
+    ($x0    $y3     $z0)        // 25
+    ($x1    $y3     $z1)        // 26
+    ($x0    $y3     $z1)        // 27
+
+    // block 6
+    ($x2    $y3     $z0)        // 28
+    ($x2    $y3     $z1)        // 29
+
+    // block 7
+    ($x3    $y3     $z0)        // 30
+    ($x3    $y3     $z1)        // 31
+);
+
+blocks
+(
+    hex (0 1 2 3 4 5 6 7)        ($nx1 $ny1 1) simpleGrading ($g1px $g1py 1)    // block 0
+    hex (1 8 9 2 5 10 11 6)      ($nx2 $ny1 1) simpleGrading (1 $g1py 1)    // block 1
+    hex (8 12 13 9 10 14 15 11)  ($nx3 $ny1 1) simpleGrading ($g1mx $g1py 1)    // block 2
+    hex (3 2 16 17 7 6 18 19)    ($nx1 $ny2 1) simpleGrading ($g1px 1 1)    // block 3
+    hex (9 13 20 21 11 15 22 23) ($nx3 $ny2 1) simpleGrading ($g1mx 1 1)    // block 4
+    hex (17 16 24 25 19 18 26 27)($nx1 $ny3 1) simpleGrading ($g1px $g1my 1)    // block 5
+    hex (16 21 28 24 18 23 29 26)($nx2 $ny3 1) simpleGrading (1 $g1my 1)    // block 6
+    hex (21 20 30 28 23 22 31 29)($nx3 $ny3 1) simpleGrading ($g1mx $g1my 1)    // block 7
+    hex (2 9 21 16 6 11 23 18)   ($nx2 $ny2 1) simpleGrading (1 1 1)    // block 8
+);
+
+edges
+(	
+);
+
+boundary
+(
+	front
+	{
+		type empty;
+		faces
+		(
+            (4 5 6 7)
+            (5 10 11 6)
+            (10 14 15 11)
+            (7 6 18 19)
+            (11 15 22 23)
+            (19 18 26 27)
+            (18 23 29 26)
+            (23 22 31 29)
+		);
+	}
+
+	back
+	{
+		type empty;
+		faces
+		(
+            (0 1 2 3)
+            (1 8 9 2)
+            (8 12 13 9)
+            (3 2 16 17)
+            (9 13 20 21)
+            (17 16 24 25)
+            (16 21 28 24)
+            (21 20 30 28)
+            (6 11 23 18)  // back side of pressure patch
+		);
+	}
+
+	pressureSource
+	{
+		type patch;
+		faces
+		(
+            (2 9 21 16)
+		);
+	}
+
+	inlet
+	{
+		type patch;
+		faces
+		(
+            (0 3 4 7)
+            (3 17 19 7)
+            (17 25 27 19)
+		);
+	}
+
+	outlet
+	{
+		type patch;
+		faces
+		(
+            (0 1 5 4)
+            (1 8 10 5)
+            (8 12 14 10)
+            (12 13 15 14)
+            (13 20 22 15)
+            (20 30 31 22)
+            (28 30 31 29)
+            (24 28 29 26)
+            (25 24 26 27)
+		);
+	}
+);
+
+
+mergePatchPairs
+(
+);
+
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
