@@ -27,12 +27,27 @@ The focus is on producing qualitative animations of concepts.**
      </tr>
    </table>
 
-The animations show the propagation of acoustic waves for $Ma_\infty = 0$ (left), $Ma_\infty = 0.5$ (middle) and
+   The animations show the propagation of acoustic waves for $Ma_\infty = 0$ (left), $Ma_\infty = 0.5$ (middle) and
 $Ma_\infty = 1.25$ (right).
+
+
+2. `LavalNozzle`
+   - A simple Laval nozzle setup with time-varying outlet pressure to demonstrate over-, ideal, and under-expansion
+
+
+   https://github.com/user-attachments/assets/a1d64b37-8939-4e0d-a2a6-e1ddfa7acca3   
+
+   The animation shows a Laval nozzle with decreasing outlet pressure.
 
 ## Ideas for other test cases
 
-1. A Laval nozzle to demonstrate under- and overexpansion
+None so far
+
+## TODOs
+
+- fix `LavalNozzle` case -> crashes currently towards the end of the simulation due to outlet BC
+- update documentation for each test case
+- update / complete Readme
 
 ## Installation of the dependencies
 

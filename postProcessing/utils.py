@@ -136,43 +136,5 @@ def load_line_samples(load_path: str, loc: list, coord: str = "x", start: int = 
 
     return line
 
-
-def prepare_data(load_path: str, bounds : list, field_name: str = "Ma", dims = None, y_max = -0.0375,
-                 n_dims : int = 2) -> Tuple[pt.Tensor, pt.Tensor, pt.Tensor]:
-    if dims is None:
-        dims = [0, 2]
-
-    # load the snapshots of the volume data
-    loader = FOAMDataloader(load_path)
-
-    # mask the coordinates
-    _coord = loader.vertices
-
-    # apply the mask
-    mask = mask_box(_coord, lower=bounds[0], upper=bounds[1])
-
-    # mask the vertices
-    _coord = pt.stack([pt.masked_select(_coord[:, d], mask) for d in range(3)], dim=1)
-
-    # check if we have multiple cells in spanwise direction
-    if n_dims == 2:
-        _coord = loader.vertices[:, dims]
-        _idx = pt.ones(_coord.shape[0],).bool()
-    else:
-        # if so, extract a slice from the middle of the domain
-        _idx = pt.isclose(_coord[:, 1], pt.tensor(y_max)/2)
-        _coord = _coord[_idx, :][:, dims]
-
-    # take all available write times except zero
-    _write_times = loader.write_times[1:]
-
-    _data = pt.zeros((_coord.shape[0], len(_write_times)))
-
-    # load the data
-    for i, t in enumerate(_write_times):
-        _data[:, i] = pt.masked_select(loader.load_snapshot(field_name, t), mask)[_idx]
-
-    return _write_times, _coord, _data
-
 if __name__ == "__main__":
     pass
