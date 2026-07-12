@@ -1,5 +1,5 @@
 """
-Create an animation of pressure wave propagation from OpenFOAM data.
+Create an animation of pressure wave propagation for the `pressureWavePropagation` setup.
 
 The script loads pressure snapshots from a selected OpenFOAM case, masks the
 domain around the pressure source, re-centers the coordinates, and writes an
@@ -9,58 +9,11 @@ import torch as pt
 import matplotlib.pyplot as plt
 
 from os import makedirs
-from typing import Union, Tuple
 from os.path import join, exists
 from matplotlib.animation import FuncAnimation, FFMpegWriter
 
-from flowtorch.data import FOAMDataloader, mask_box
+from utils import prepare_data
 
-
-def prepare_data(load_path: str, bounds : list, field_name: str = "p",
-                 t_start: Union[float, int] = 0.001) -> Tuple[list, pt.Tensor, pt.Tensor]:
-    """
-    Load and mask OpenFOAM snapshots for the wave animation.
-
-    :param load_path: Path to the OpenFOAM case directory.
-    :type load_path: str
-    :param bounds: Lower and upper ``[x, y]`` bounds used to mask the mesh.
-    :type bounds: Sequence[Sequence[float | int]]
-    :param field_name: Name of the scalar field to load.
-    :type field_name: str
-    :param t_start: Earliest write time included in the animation.
-    :type t_start: float | int
-    :return: Write times, masked two-dimensional coordinates, and masked field
-        snapshots arranged as ``(n_points, n_times)``.
-    :rtype: tuple[list[str], torch.Tensor, torch.Tensor]
-    """
-    # load the snapshots of the volume data
-    loader = FOAMDataloader(load_path)
-
-    # mask the coordinates
-    _coord = loader.vertices[:, :2]
-
-    # apply the mask
-    mask = mask_box(_coord, lower=bounds[0], upper=bounds[1])
-
-    # mask the vertices
-    _coord = pt.stack([pt.masked_select(_coord[:, d], mask) for d in range(2)], dim=1)
-
-    # take all available write times except zero
-    _write_times = [t for t in loader.write_times if float(t) >= t_start]
-
-    # allocate a tensor for the flow fields, for the animation we don't care about DP
-    _data = pt.zeros((_coord.shape[0], len(_write_times))).to(pt.float32)
-
-    # load the data, loop over times due to memory constraints for the DDES case
-    print(f"Loading snapshots for field {field_name}. Found {len(_write_times)} snapshots.")
-
-    for i, t in enumerate(_write_times):
-        print(f"\rLoading write time {i + 1} / {len(_write_times)}.", end="", flush=True)
-        _data[:, i] = pt.masked_select(loader.load_snapshot(field_name, t), mask).to(pt.float32)
-
-    print("\nDone.")
-
-    return _write_times, _coord, _data
 
 if __name__ == "__main__":
     # path settings
@@ -127,4 +80,4 @@ if __name__ == "__main__":
 
     ani = FuncAnimation(fig, animate, frames=data.shape[1], blit=False, repeat=True)
     writer = FFMpegWriter(fps=15)
-    ani.save(join(save_dir, f"flow_field_animation_{case}.mp4"), writer=writer)
+    ani.save(join(save_dir, f"wave_animation_{case}.mp4"), writer=writer)

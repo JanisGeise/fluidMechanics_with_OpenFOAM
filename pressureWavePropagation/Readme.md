@@ -1,6 +1,7 @@
 # Pressure Wave Propagation Case
 
 This directory contains an OpenFOAM setup for a two-dimensional pressure wave propagation test. The case uses a small oscillating pressure patch inside a rectangular domain to generate acoustic waves in otherwise quiescent air. The resulting pressure field can be post-processed with `animate_waves.py` to create an animation of the normalized pressure fluctuation.
+On $6$ CPUs, the simulation takes about $5-10$ min to complete.
 
 ## Physical Setup
 

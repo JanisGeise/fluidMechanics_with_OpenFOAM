@@ -1,0 +1,87 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2412                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volScalarField;
+    object      p;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+pIn             1.0e5;      // pressure in nozzle inlet
+pOutHigh        8.0e4;      // pressure at outlet for the initial transient -> shock remains in nozzle
+pOutOpt         1.5e4;      // pressure at outlet for reaching ideal expansion
+pOutLow         1.0e3;      // pressure at outlet for max. under-expansion
+
+dimensions      [1 -1 -2 0 0 0 0];
+
+internalField   uniform $pOutHigh;
+
+boundaryField
+{
+    inlet
+    {
+        type            totalPressure;
+        p0              uniform $pIn;
+        gamma           1.4;
+        value           uniform $pIn;
+    }
+
+    downstreamOutlet
+    {
+        type uniformFixedValue;
+
+        uniformValue table
+        (
+            (0.00 $pOutHigh)
+            (0.50 $pOutHigh)
+            (1.80 $pOutOpt)
+            (2.00 $pOutOpt)
+            (4.25 $pOutLow)
+            (4.50 $pOutLow)
+        );
+    }
+
+    farfield
+    {
+        type uniformFixedValue;
+
+        uniformValue table
+        (
+            (0.00 $pOutHigh)
+            (0.50 $pOutHigh)
+            (1.80 $pOutOpt)
+            (2.00 $pOutOpt)
+            (4.25 $pOutLow)
+            (4.50 $pOutLow)
+        );
+    }
+
+    nozzle
+    {
+        type            zeroGradient;
+    }
+
+    middle
+    {
+        type            symmetryPlane;
+    }
+
+    front
+    {
+        type            empty;
+    }
+
+    back
+    {
+        type            empty;
+    }
+}
+
+// ************************************************************************* //

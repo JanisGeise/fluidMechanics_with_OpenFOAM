@@ -27,8 +27,8 @@ The focus is on producing qualitative animations of concepts.**
      </tr>
    </table>
 
-The animations show the propagation of acoustic waves for $M_\infty = 0$ (left), $M_\infty = 0.5$ (middle) and
-$M_\infty = 1.25$ (right).
+The animations show the propagation of acoustic waves for $Ma_\infty = 0$ (left), $Ma_\infty = 0.5$ (middle) and
+$Ma_\infty = 1.25$ (right).
 
 ## Ideas for other test cases
 
@@ -40,13 +40,13 @@ still TODO
 
 ## Running a case
 
-To run a case, execute the `Allrun` located iin the corresponding case directory.
+To run a case, execute the `Allrun` located in the corresponding case directory.
 To reset a simulation, execute the `Allclean`.
 Further information can be found in the `Readme.md` files in each case setup.
 
 ## Contributing
 
-If you have any ideas for new setups of suggestions for improvements, feel free to open up an issue.
+If you have any ideas for new setups or suggestions for improvements, feel free to open up an issue.
 
 ## License
 
